@@ -1,0 +1,29 @@
+type BidError = variant {
+  BidFailed;
+  UpdateError;
+  NoItem;
+  AlreadyBid;
+  Unauthorized;
+  ItemNotActive;
+};
+type Createitem = record { description : text; is_active : bool };
+type Item = record {
+  owner : principal;
+  voted : vec principal;
+  description : text;
+  highest_bidder : principal;
+  bid_count : nat32;
+  is_active : bool;
+  highest_bid : nat64;
+};
+type Result = variant { Ok : text; Err : BidError };
+service : {
+  bid : (nat64, nat64) -> (Result);
+  create_item : (nat64, Createitem) -> (opt Item);
+  get_all_items : () -> (vec Item) query;
+  get_item : (nat64) -> (opt Item) query;
+  get_item_count : () -> (nat64) query;
+  get_item_most_bids : () -> (opt Item) query;
+  get_item_sold_for_most : () -> (opt Item) query;
+  remove : (nat64) -> (Result);
+}
